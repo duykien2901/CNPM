@@ -10,10 +10,13 @@ import javax.swing.JTextPane;
 import javax.swing.JToggleButton;
 import javax.swing.JButton;
 import java.awt.Font;
+import java.awt.Frame;
+
 import javax.swing.SwingConstants;
 import javax.swing.JFormattedTextField;
 import com.toedter.calendar.JDateChooser;
 
+import controller.JpanelAddController;
 import models.DanhSachDongGop;
 import models.DanhSachKhoanThu;
 import services.DongGopService;
@@ -31,6 +34,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.ImageIcon;
 
 public class JpanelAdd extends JPanel {
 	private JTextField textField_1;
@@ -47,6 +51,29 @@ public class JpanelAdd extends JPanel {
 		setBorder(new EmptyBorder(0, 0, 0, 0));
 		setBackground(new Color(255, 255, 240));
 		setLayout(null);
+		
+		textField_1 = new JTextField();
+		textField_2 = new JTextField();
+		dateChooser = new JDateChooser();
+		dateChooser_1 = new JDateChooser();
+		
+		dateChooser.setFont(new Font("SansSerif", Font.PLAIN, 18));
+		dateChooser.setBorder(new EmptyBorder(0, 0, 0, 0));
+		dateChooser.setBounds(342, 381, 274, 36);
+		add(dateChooser);
+
+	
+		dateChooser_1.setFont(new Font("SansSerif", Font.PLAIN, 18));
+		dateChooser_1.setBounds(342, 454, 274, 36);
+		add(dateChooser_1);
+		
+		comboBox = new JComboBox();
+		comboBox.setFont(new Font("SansSerif", Font.PLAIN, 17));
+		comboBox.setModel(new DefaultComboBoxModel(new String[] { "Khoản thu", "Đóng góp" }));
+		comboBox.setBounds(612, 137, 147, 36);
+		add(comboBox);
+		
+		JpanelAddController jpanelAddController = new JpanelAddController(textField_1, textField_2, dateChooser, dateChooser_1, comboBox);
 
 		JLabel lblNewLabel_1 = new JLabel("Tên khoản thu: ");
 		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
@@ -54,13 +81,16 @@ public class JpanelAdd extends JPanel {
 		lblNewLabel_1.setBounds(183, 248, 108, 25);
 		add(lblNewLabel_1);
 
-		textField_1 = new JTextField();
+		
+		
+		
 		textField_1.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (comboBox.getSelectedItem().equals("Khoản thu")) {
 				} else {
 					textField_2.setText("Không phải điền");
+					lblNewLabel_1.setText("Tên đóng góp");
 				}
 
 			}
@@ -76,7 +106,7 @@ public class JpanelAdd extends JPanel {
 		lblNewLabel_2.setBounds(183, 318, 108, 25);
 		add(lblNewLabel_2);
 
-		textField_2 = new JTextField();
+		
 		textField_2.setFont(new Font("SansSerif", Font.PLAIN, 18));
 		textField_2.setBounds(342, 312, 274, 36);
 		add(textField_2);
@@ -94,32 +124,27 @@ public class JpanelAdd extends JPanel {
 		lblNewLabel_4.setBounds(183, 465, 108, 25);
 		add(lblNewLabel_4);
 
-		JButton btnNewButton = new JButton("Lưu");
+		JButton btnNewButton = new JButton("Thêm");
+		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				insertDb();
+				jpanelAddController.insertDb();
+				System.out.println(jpanelAddController.getTextField_1().getText());
+				System.out.println(jpanelAddController.getTextField_2().getText());
+				System.out.println(jpanelAddController.getDateChooser().getDate());
+				System.out.println(jpanelAddController.getDateChooser_1().getDate());
+//				insertDb();
 			}
 		});
-		btnNewButton.setBounds(679, 610, 108, 36);
+		btnNewButton.setBounds(651, 548, 108, 36);
 		add(btnNewButton);
 
-		dateChooser = new JDateChooser();
-		dateChooser.setFont(new Font("SansSerif", Font.PLAIN, 18));
-		dateChooser.setBorder(new EmptyBorder(0, 0, 0, 0));
-		dateChooser.setBounds(342, 381, 274, 36);
-		add(dateChooser);
+		
+		
 
-		dateChooser_1 = new JDateChooser();
-		dateChooser_1.setFont(new Font("SansSerif", Font.PLAIN, 18));
-		dateChooser_1.setBounds(342, 454, 274, 36);
-		add(dateChooser_1);
+		
 
-		comboBox = new JComboBox();
-
-		comboBox.setFont(new Font("SansSerif", Font.PLAIN, 17));
-		comboBox.setModel(new DefaultComboBoxModel(new String[] { "Khoản thu", "Đóng góp" }));
-		comboBox.setBounds(611, 91, 147, 30);
-		add(comboBox);
+		
 
 		JLabel lblNewLabel = new JLabel("(*)");
 		lblNewLabel.setForeground(Color.RED);
@@ -140,37 +165,72 @@ public class JpanelAdd extends JPanel {
 		lblNewLabel_7.setForeground(Color.RED);
 		lblNewLabel_7.setBounds(628, 459, 27, 31);
 		add(lblNewLabel_7);
-//		setData(comboBox);
+
+		JLabel lblNewLabel_8 = new JLabel("Thêm khoản tiền");
+		lblNewLabel_8.setIcon(new ImageIcon(
+				"C:\\Users\\LENOVO\\eclipse-workspace\\Quanly\\src\\image\\iconfinder_ic_note_add_48px_3669317.png"));
+		lblNewLabel_8.setFont(new Font("SansSerif", Font.BOLD, 25));
+		lblNewLabel_8.setBounds(49, 26, 256, 83);
+		add(lblNewLabel_8);
+		
+		JButton btnNewButton_1 = new JButton("");
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				textField_1.setText("");
+				textField_2.setText("");
+				dateChooser.setCalendar(null);
+				dateChooser_1.setCalendar(null);
+			}
+		});
+		btnNewButton_1.setBackground(new Color(127, 255, 212));
+		btnNewButton_1.setIcon(new ImageIcon("C:\\Users\\LENOVO\\eclipse-workspace\\Quanly\\src\\image\\iconfinder_refresh_134221.png"));
+		btnNewButton_1.setBounds(700, 26, 59, 47);
+		add(btnNewButton_1);
 	}
 
-	public void setData(JComboBox jComboBox) {
-		if (jComboBox.getSelectedItem().equals("Đóng góp")) {
-			textField_1.setText("Không phải điền");
-		} else {
-			textField_1.setText("");
-		}
-	}
-	public void insertDb() {
-		if (textField_1.getText().equals("") || textField_2.getText().equals("")
-				|| dateChooser.getDate().equals("") || dateChooser_1.getDate().equals("")) {
-			JOptionPane.showMessageDialog(null, "Chưa điền đủ thông tin");
-		} else if (String.valueOf(comboBox.getSelectedItem()).equals("Khoản thu")) {
-			DanhSachKhoanThu kt = new DanhSachKhoanThu();
-			kt.setTenKhoanThu(textField_1.getText());
-			kt.setSoTien(Integer.parseInt(textField_2.getText()));
-			kt.setBatDau(new SimpleDateFormat("dd/MM/yyyy").format(dateChooser.getDate()));
-			kt.setKetThuc(new SimpleDateFormat("dd/MM/yyyy").format(dateChooser_1.getDate()));
-			KhoanThuService khoanThuService = new KhoanThuService();
-			khoanThuService.themKhoanThu(kt);
-			JOptionPane.showMessageDialog(null, "Thêm thành công");
-		} else {
-			DanhSachDongGop dg = new DanhSachDongGop();
-			dg.setTenDongGop(textField_1.getText());
-			dg.setBatDau(new SimpleDateFormat("dd/MM/yyyy").format(dateChooser.getDate()));
-			dg.setKetThuc(new SimpleDateFormat("dd/MM/yyyy").format(dateChooser_1.getDate()));
-			DongGopService dongGopService = new DongGopService();
-			dongGopService.themDongGop(dg);
-			JOptionPane.showMessageDialog(null, "Thêm thành công");
-		}
-	}
+	
+
+//	public void insertDb() {
+////		System.out.println(dateChooser.getDate().before(dateChooser_1.getDate()));
+//		if (textField_1.getText().equals("") || textField_2.getText().equals("") || dateChooser.getDate().equals("")
+//				|| dateChooser_1.getDate().equals("")) {
+//			JOptionPane.showMessageDialog(null, "Chưa điền đủ thông tin", "Message", JOptionPane.ERROR_MESSAGE);
+//
+//		} else if (String.valueOf(comboBox.getSelectedItem()).equals("Khoản thu")) {
+//			try {
+//				System.out.println(Integer.parseInt(textField_2.getText()));
+//
+//			} catch (Exception e) {
+//				// TODO: handle exception
+//				JOptionPane.showMessageDialog(null, "Sai định dạng", "Message", JOptionPane.ERROR_MESSAGE);
+//			}
+//			if (Integer.parseInt(textField_2.getText()) <= 0) {
+//				JOptionPane.showMessageDialog(null, "Tiền phải lớn hơn 0", "Message", JOptionPane.ERROR_MESSAGE);
+//			} else if (!dateChooser.getDate().before(dateChooser_1.getDate())) {
+//				JOptionPane.showMessageDialog(null, "Nhập lại ngày", "Message", JOptionPane.ERROR_MESSAGE);
+//			} else {
+//				DanhSachKhoanThu kt = new DanhSachKhoanThu();
+//				kt.setTenKhoanThu(textField_1.getText());
+//				kt.setSoTien(Integer.parseInt(textField_2.getText()));
+//				kt.setBatDau(new SimpleDateFormat("dd/MM/yyyy").format(dateChooser.getDate()));
+//				kt.setKetThuc(new SimpleDateFormat("dd/MM/yyyy").format(dateChooser_1.getDate()));
+//				KhoanThuService khoanThuService = new KhoanThuService();
+//				khoanThuService.themKhoanThu(kt);
+//				khoanThuService.themHoKhau(kt, khoanThuService.getHoNopTien());
+//				JOptionPane.showMessageDialog(null, "Thêm thành công");
+//			}
+//
+//		} else if (!dateChooser.getDate().before(dateChooser_1.getDate())) {
+//			JOptionPane.showMessageDialog(null, "Nhập lại ngày", "Message", JOptionPane.ERROR_MESSAGE);
+//		} else {
+//			DanhSachDongGop dg = new DanhSachDongGop();
+//			dg.setTenDongGop(textField_1.getText());
+//			dg.setBatDau(new SimpleDateFormat("dd/MM/yyyy").format(dateChooser.getDate()));
+//			dg.setKetThuc(new SimpleDateFormat("dd/MM/yyyy").format(dateChooser_1.getDate()));
+//			DongGopService dongGopService = new DongGopService();
+//			dongGopService.themDongGop(dg);
+//			dongGopService.themHoKhau(dg, dongGopService.getHoDongGop());
+//			JOptionPane.showMessageDialog(null, "Thêm thành công");
+//		}
+//	}
 }

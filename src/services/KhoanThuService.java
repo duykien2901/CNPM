@@ -122,6 +122,32 @@ public class KhoanThuService {
 		return hoNopTien;
 	}
 	
+	public ArrayList<HoNopTien> getHoNopTien(DanhSachKhoanThu dsKhoanThu) {
+		ArrayList<HoNopTien> hoNopTien = new ArrayList<HoNopTien>();
+		try {
+			Connection connection = (Connection) MysqlConnection.getMysqlConnection();
+			String sqlSelect = "select ID, ten_chu_ho, so_nhan_khau, trang_thai from ho_khau, quan_ly_thu_phi " 
+					+ "where ID = id_hokhau and id_khoanthu = " + dsKhoanThu.getIdKhoanThu();
+			PreparedStatement preparedStatement = (PreparedStatement) connection.prepareStatement(sqlSelect);
+			ResultSet rs = preparedStatement.executeQuery();
+			while(rs.next()) {
+				HoNopTien hoNT = new HoNopTien();
+				hoNT.setIdHoKhau(rs.getInt("ID"));
+				hoNT.setTenHoKhau(rs.getString("ten_chu_ho"));
+				hoNT.setSoNhanKhau(rs.getInt("so_nhan_khau"));
+				hoNT.setTrangThai(rs.getInt("trang_thai"));
+				hoNopTien.add(hoNT);
+			}
+			preparedStatement.close();
+			connection.close();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return hoNopTien;
+	}
+	
 	public void capNhatKhoanThu(DanhSachKhoanThu dsKhoanThu) {
 		try {
 			Connection connection = (Connection) MysqlConnection.getMysqlConnection();
@@ -153,16 +179,13 @@ public class KhoanThuService {
 			Connection connection = (Connection) MysqlConnection.getMysqlConnection();
 			for(int i = 0; i < hoNopTien.size(); i++) {
 				String sqlUpdate = "update quan_ly_thu_phi" + " set "
-						+ "trang_thai = ?, " + hoNopTien.get(i).getTrangThai()
-						+ "where id_hokhau = " + hoNopTien.get(i).getIdHoKhau()
-						+ "and id_khoanthu = " + dsKhoanThu.getIdKhoanThu();
-//				PreparedStatement preparedStatement = (PreparedStatement) connection.prepareStatement(sqlUpdate);
-//				preparedStatement.setInt(1, hoNopTien.get(i).getSoNhanKhau());
-//				preparedStatement.execute();
-//				
-//				preparedStatement.close();
+						+ "trang_thai = " + hoNopTien.get(i).getTrangThai()
+						+ " where id_hokhau = " + hoNopTien.get(i).getIdHoKhau()
+						+ " and id_khoanthu = " + dsKhoanThu.getIdKhoanThu();
+				PreparedStatement preparedStatement = (PreparedStatement) connection.prepareStatement(sqlUpdate);
+				preparedStatement.execute();
+				preparedStatement.close();
 			}
-			
 			connection.close();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
@@ -175,9 +198,9 @@ public class KhoanThuService {
 		int sum = 0;
 		try {
 			Connection connection = (Connection) MysqlConnection.getMysqlConnection();
-			String sqlSelect = "select SUM(so_tien_thu) tong_tien from quan_ly_thu_phi "
-					+ "where id_khoanthu = " + dsKhoanThu.getIdKhoanThu();
-//					+ "and trang_thai = 1";
+			String sqlSelect = "select SUM(so_tien_thu) tong_tien from quan_ly_thu_phi"
+					+ " where id_khoanthu = " + dsKhoanThu.getIdKhoanThu()
+					+ " and trang_thai = 1";
 			PreparedStatement preparedStatement = (PreparedStatement) connection.prepareStatement(sqlSelect);
 			ResultSet rs = preparedStatement.executeQuery();
 			rs.first();
@@ -192,4 +215,27 @@ public class KhoanThuService {
 		}
 		return sum;
 	}
+	
+	public int tongHoNopTien(DanhSachKhoanThu dsKhoanThu) {
+		int sum = 0;
+		try {
+			Connection connection = (Connection) MysqlConnection.getMysqlConnection();
+			String sqlSelect = "select count(*) tong_ho_nop_tien from quan_ly_thu_phi"
+					+ " where id_khoanthu = " + dsKhoanThu.getIdKhoanThu()
+					+ " and trang_thai = 1";
+			PreparedStatement preparedStatement = (PreparedStatement) connection.prepareStatement(sqlSelect);
+			ResultSet rs = preparedStatement.executeQuery();
+			rs.first();
+			sum = rs.getInt("tong_ho_nop_tien");
+			
+			preparedStatement.close();
+			connection.close();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return sum;
+	}
+	
 }

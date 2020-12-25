@@ -6,6 +6,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Color;
 import javax.swing.ImageIcon;
 import java.awt.Font;
@@ -15,6 +17,10 @@ import javax.swing.JPasswordField;
 import javax.swing.border.LineBorder;
 import java.awt.Button;
 import javax.swing.border.MatteBorder;
+
+
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class QuanLy extends JFrame {
 
@@ -43,7 +49,7 @@ public class QuanLy extends JFrame {
 	 */
 	public QuanLy() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 949, 645);
+		setBounds(450, 150, 949, 645);
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(240, 248, 255));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -125,6 +131,25 @@ public class QuanLy extends JFrame {
 		panel_1.add(lblNewLabel_7);
 		
 		Button button = new Button("Login");
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(textField.getText().equals("Admin") && String.valueOf(passwordField.getPassword()).equals("123")) {
+					Interface interface1;
+					JOptionPane.showMessageDialog(null, "Đăng nhập thành công");
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					interface1 = new Interface();
+					interface1.setVisible(true);
+					setVisible(false);
+				} else {
+					JOptionPane.showMessageDialog(null, "Đăng nhập thất bại");
+				}
+			}
+		});
 		button.setBackground(new Color(192, 192, 192));
 		button.setForeground(new Color(105, 105, 105));
 		button.setFont(new Font("SansSerif", Font.BOLD, 19));

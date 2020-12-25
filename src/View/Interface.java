@@ -1,5 +1,5 @@
 package View;
-import image.*;
+
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -21,8 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.border.MatteBorder;
-
-import DanhmucSP.Danhmuc;
 import controller.ChuyenController;
 
 import javax.swing.border.LineBorder;

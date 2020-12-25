@@ -43,9 +43,10 @@ public class DongGopService {
 	public void themHoKhau(DanhSachDongGop dsDongGop, ArrayList<HoDongGop> hoDongGop) {
 		try {
 			Connection connection = (Connection) MysqlConnection.getMysqlConnection();
-			String sqlSearch = "select ID from dong_gop where ten_dong_gop = " + "'" + dsDongGop.getTenDongGop() + "'";
+			String sqlSearch = "select ID from dong_gop where ten_dong_gop = " + "'"+ dsDongGop.getTenDongGop() + "'";
 			PreparedStatement preparedStatement = (PreparedStatement) connection.prepareStatement(sqlSearch);
 			ResultSet rs = preparedStatement.executeQuery();
+			rs.first();
 			int idDongGop = rs.getInt("ID");
 			String sqlInsert = "INSERT INTO quan_ly_dong_gop(id_donggop, id_hokhau, so_tien_dong)"
 					+ " values (?, ?, ?)";
@@ -122,6 +123,31 @@ public class DongGopService {
 		return hoDongGop;
 	}
 	
+	public ArrayList<HoDongGop> getHoDongGop(DanhSachDongGop dsDongGop) {
+		ArrayList<HoDongGop> hoDongGop = new ArrayList<HoDongGop>();
+		try {
+			Connection connection = (Connection) MysqlConnection.getMysqlConnection();
+			String sqlSelect = "select ID, ten_chu_ho, so_tien_dong from ho_khau, quan_ly_dong_gop " 
+					+ "where ID = id_hokhau and id_donggop = " + dsDongGop.getIdDongGop();
+			PreparedStatement preparedStatement = (PreparedStatement) connection.prepareStatement(sqlSelect);
+			ResultSet rs = preparedStatement.executeQuery();
+			while(rs.next()) {
+				HoDongGop hoDG = new HoDongGop();
+				hoDG.setIdHoKhau(rs.getInt("ID"));
+				hoDG.setTenHoKhau(rs.getString("ten_chu_ho"));
+				hoDG.setTienDongGop(rs.getInt("so_tien_dong"));
+				hoDongGop.add(hoDG);
+			}
+			
+			preparedStatement.close();
+			connection.close();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return hoDongGop;
+	}
 	public void capNhatDongGop(DanhSachDongGop dsDongGop) {
 		try {
 			Connection connection = (Connection) MysqlConnection.getMysqlConnection();
@@ -151,9 +177,9 @@ public class DongGopService {
 			Connection connection = (Connection) MysqlConnection.getMysqlConnection();
 			for(int i = 0; i < hoDongGop.size(); i++) {
 				String sqlUpdate = "update quan_ly_dong_gop" + " set "
-						+ "so_tien_dong = ?, " + hoDongGop.get(i).getTienDongGop()
-						+ "where id_hokhau = " + hoDongGop.get(i).getIdHoKhau()
-						+ "and id_donggop = " + dsDongGop.getIdDongGop();
+						+ "so_tien_dong = " + hoDongGop.get(i).getTienDongGop()
+						+ " where id_hokhau = " + hoDongGop.get(i).getIdHoKhau()
+						+ " and id_donggop = " + dsDongGop.getIdDongGop();
 				PreparedStatement preparedStatement = (PreparedStatement) connection.prepareStatement(sqlUpdate);
 //				preparedStatement.setInt(1, hoNopTien.get(i).getSoNhanKhau());
 				preparedStatement.execute();
@@ -169,7 +195,7 @@ public class DongGopService {
 		}
 	}
 	
-	public int tongTienThu(DanhSachDongGop dsDongGop) {
+	public int tongTienDong(DanhSachDongGop dsDongGop) {
 		int sum = 0;
 		try {
 			Connection connection = (Connection) MysqlConnection.getMysqlConnection();
@@ -194,8 +220,9 @@ public class DongGopService {
 		int sum = 0;
 		try {
 			Connection connection = (Connection) MysqlConnection.getMysqlConnection();
-			String sqlSelect = "select SUM(so_tien_dong) tong_ho_dong_gop from quan_ly_dong_gop "
-					+ "where id_donggop = " + dsDongGop.getIdDongGop();
+			String sqlSelect = "select count(*) tong_ho_dong_gop from quan_ly_dong_gop "
+					+ "where id_donggop = " + dsDongGop.getIdDongGop()
+					+ " and so_tien_dong > 0";
 			PreparedStatement preparedStatement = (PreparedStatement) connection.prepareStatement(sqlSelect);
 			ResultSet rs = preparedStatement.executeQuery();
 			rs.first();

@@ -10,7 +10,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.RootPaneContainer;
 
-import DanhmucSP.Danhmuc;
 import View.JpanelAdd;
 import View.JpanelMain;
 import View.JpanelUpdate;
